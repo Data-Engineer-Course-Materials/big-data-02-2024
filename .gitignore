@@ -1,1 +1,9 @@
 /.idea/
+/**/*-checkpoint.*
+/.ipynb_checkpoints/
+/**/*.csv
+/**/*.xlsx
+/**/*.json
+*.csv
+*.xlsx
+
