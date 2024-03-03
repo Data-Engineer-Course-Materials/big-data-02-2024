@@ -1,0 +1,7 @@
+user1	query:гугл
+user1	url:google.ru
+user2	query:котики
+user2	query:котики с цветами
+user2	url:yandex.ru
+user2	url:yandex.ru/explore/images
+user3	query:вконтакте

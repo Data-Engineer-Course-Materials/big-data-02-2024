@@ -1,0 +1,6 @@
+www.facebook.com	100
+www.google.com	10
+www.google.com	5
+www.google.com	15
+www.wiki.org	60
+www.wiki.org	100
