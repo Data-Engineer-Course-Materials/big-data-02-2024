@@ -2,4 +2,5 @@
 import sys
 
 for line in sys.stdin:
-    print(line.strip() + '\t1')
+    key, value = line.strip().split(',')
+    print(f'{value}\t1')

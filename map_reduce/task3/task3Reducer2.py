@@ -1,19 +1,18 @@
 #! /usr/bin/env python3
 import sys
 
-result = {}
+current_word = None
+current_count = 0
 
 for line in sys.stdin:
-    key, sum_input,count_input = line.strip().split('\t')
-    old_value = result.get(key)
-    if old_value is None:
-        sum_result = int(sum_input)
-        count = int(count_input)
+    word, count = line.strip().split('\t')
+    count = int(count)
+    if current_word == word:
+        current_count += count
     else:
-        sum_result = int(sum_input) + old_value[0]
-        count = int(count_input) + old_value[1]
-    result.update({key: [sum_result, count]})
+        print(f'{current_word}\t{current_count}')
+        current_word = word
+        current_count = count
 
-for key,value in result.items():
-    avg = value[0]/value[1]
-    print(f'{key}\t{avg}')
+if current_word:
+    print(f'{current_word}\t{current_count}')
