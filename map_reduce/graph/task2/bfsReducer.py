@@ -30,4 +30,4 @@ for key in dict_graph:
         if node != '':
             adjustment_list_result.append(node)
     weight = str(dict_graph[key]['weight']).upper()
-    print(f"{key}\t{weight}\t" + '{' ','.join(adjustment_list_result) + '}')
+    print(f"{key}\t{weight}\t" + '{' + ','.join(adjustment_list_result) + '}')
