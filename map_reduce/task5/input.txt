@@ -1,5 +1,5 @@
 1448713968	user2	https://ru.wikipedia.org/
-1448764519	user10	https://vk.com/profile/
+1448764519	admin	https://vk.com/profile/
 1448713968	user5	http://google.com/
-1448773411	user10	https://ru.wikipedia.org/explore/data-scienc
+1448773411	admin	https://ru.wikipedia.org/explore/data-scienc
 1448709864	user3	http://vk.com/
