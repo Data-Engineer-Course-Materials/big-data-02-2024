@@ -14,6 +14,12 @@ employee = {
     "update_date": 20240312010101
 }
 
-writer = DataFileWriter(open("sample.avro", "wb"), DatumWriter(), file_schema)
-writer.append(employee)
-writer.close()
+# writer = DataFileWriter(open("sample.avro", "wb"), DatumWriter(), file_schema)
+# writer.append(employee)
+# writer.close()
+
+reader = DataFileReader(open("sample.avro", "rb"), DatumReader())
+for user in reader:
+    print(user)
+
+reader.close()
