@@ -7,3 +7,5 @@
 *.csv
 *.xlsx
 
+/hive/hdfs/
+/hive/metastore-postgresql/
