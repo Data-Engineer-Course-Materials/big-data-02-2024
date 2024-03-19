@@ -1,0 +1,548 @@
+root@a1368f7d4962:/# hbase shell
+2024-03-18 07:01:47,381 WARN  [main] util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+HBase Shell; enter 'help<RETURN>' for list of supported commands.
+Type "exit<RETURN>" to leave the HBase Shell
+Version 1.2.6, rUnknown, Mon May 29 02:25:32 CDT 2017
+
+hbase(main):001:0> list
+TABLE
+Contacts
+1 row(s) in 0.1220 seconds
+
+=> ["Contacts"]
+hbase(main):002:0> count 'Contacts'
+0 row(s) in 0.0800 seconds
+
+=> 0
+hbase(main):003:0> get 'Contacts' 1
+SyntaxError: (hbase):3: syntax error, unexpected tINTEGER
+
+get 'Contacts' 1
+               ^
+
+hbase(main):004:0> get 'Contacts' '1'
+
+ERROR: wrong number of arguments (1 for 2)
+
+Here is some help for this command:
+Get row or cell contents; pass table name, row, and optionally
+a dictionary of column(s), timestamp, timerange and versions. Examples:
+
+  hbase> get 'ns1:t1', 'r1'
+  hbase> get 't1', 'r1'
+  hbase> get 't1', 'r1', {TIMERANGE => [ts1, ts2]}
+  hbase> get 't1', 'r1', {COLUMN => 'c1'}
+  hbase> get 't1', 'r1', {COLUMN => ['c1', 'c2', 'c3']}
+  hbase> get 't1', 'r1', {COLUMN => 'c1', TIMESTAMP => ts1}
+  hbase> get 't1', 'r1', {COLUMN => 'c1', TIMERANGE => [ts1, ts2], VERSIONS => 4}
+  hbase> get 't1', 'r1', {COLUMN => 'c1', TIMESTAMP => ts1, VERSIONS => 4}
+  hbase> get 't1', 'r1', {FILTER => "ValueFilter(=, 'binary:abc')"}
+  hbase> get 't1', 'r1', 'c1'
+  hbase> get 't1', 'r1', 'c1', 'c2'
+  hbase> get 't1', 'r1', ['c1', 'c2']
+  hbase> get 't1', 'r1', {COLUMN => 'c1', ATTRIBUTES => {'mykey'=>'myvalue'}}
+  hbase> get 't1', 'r1', {COLUMN => 'c1', AUTHORIZATIONS => ['PRIVATE','SECRET']}
+  hbase> get 't1', 'r1', {CONSISTENCY => 'TIMELINE'}
+  hbase> get 't1', 'r1', {CONSISTENCY => 'TIMELINE', REGION_REPLICA_ID => 1}
+
+Besides the default 'toStringBinary' format, 'get' also supports custom formatting by
+column.  A user can define a FORMATTER by adding it to the column name in the get
+specification.  The FORMATTER can be stipulated:
+
+ 1. either as a org.apache.hadoop.hbase.util.Bytes method name (e.g, toInt, toString)
+ 2. or as a custom class followed by method name: e.g. 'c(MyFormatterClass).format'.
+
+Example formatting cf:qualifier1 and cf:qualifier2 both as Integers:
+  hbase> get 't1', 'r1' {COLUMN => ['cf:qualifier1:toInt',
+    'cf:qualifier2:c(org.apache.hadoop.hbase.util.Bytes).toInt'] }
+
+Note that you can specify a FORMATTER by column only (cf:qualifier).  You cannot specify
+a FORMATTER for all columns of a column family.
+
+The same commands also can be run on a reference to a table (obtained via get_table or
+create_table). Suppose you had a reference t to table 't1', the corresponding commands
+would be:
+
+  hbase> t.get 'r1'
+  hbase> t.get 'r1', {TIMERANGE => [ts1, ts2]}
+  hbase> t.get 'r1', {COLUMN => 'c1'}
+  hbase> t.get 'r1', {COLUMN => ['c1', 'c2', 'c3']}
+  hbase> t.get 'r1', {COLUMN => 'c1', TIMESTAMP => ts1}
+  hbase> t.get 'r1', {COLUMN => 'c1', TIMERANGE => [ts1, ts2], VERSIONS => 4}
+  hbase> t.get 'r1', {COLUMN => 'c1', TIMESTAMP => ts1, VERSIONS => 4}
+  hbase> t.get 'r1', {FILTER => "ValueFilter(=, 'binary:abc')"}
+  hbase> t.get 'r1', 'c1'
+  hbase> t.get 'r1', 'c1', 'c2'
+  hbase> t.get 'r1', ['c1', 'c2']
+  hbase> t.get 'r1', {CONSISTENCY => 'TIMELINE'}
+  hbase> t.get 'r1', {CONSISTENCY => 'TIMELINE', REGION_REPLICA_ID => 1}
+
+
+hbase(main):005:0> get 'Contacts' '1' 'Personal'
+
+ERROR: wrong number of arguments (1 for 2)
+
+Here is some help for this command:
+Get row or cell contents; pass table name, row, and optionally
+a dictionary of column(s), timestamp, timerange and versions. Examples:
+
+  hbase> get 'ns1:t1', 'r1'
+  hbase> get 't1', 'r1'
+  hbase> get 't1', 'r1', {TIMERANGE => [ts1, ts2]}
+  hbase> get 't1', 'r1', {COLUMN => 'c1'}
+  hbase> get 't1', 'r1', {COLUMN => ['c1', 'c2', 'c3']}
+  hbase> get 't1', 'r1', {COLUMN => 'c1', TIMESTAMP => ts1}
+  hbase> get 't1', 'r1', {COLUMN => 'c1', TIMERANGE => [ts1, ts2], VERSIONS => 4}
+  hbase> get 't1', 'r1', {COLUMN => 'c1', TIMESTAMP => ts1, VERSIONS => 4}
+  hbase> get 't1', 'r1', {FILTER => "ValueFilter(=, 'binary:abc')"}
+  hbase> get 't1', 'r1', 'c1'
+  hbase> get 't1', 'r1', 'c1', 'c2'
+  hbase> get 't1', 'r1', ['c1', 'c2']
+  hbase> get 't1', 'r1', {COLUMN => 'c1', ATTRIBUTES => {'mykey'=>'myvalue'}}
+  hbase> get 't1', 'r1', {COLUMN => 'c1', AUTHORIZATIONS => ['PRIVATE','SECRET']}
+  hbase> get 't1', 'r1', {CONSISTENCY => 'TIMELINE'}
+  hbase> get 't1', 'r1', {CONSISTENCY => 'TIMELINE', REGION_REPLICA_ID => 1}
+
+Besides the default 'toStringBinary' format, 'get' also supports custom formatting by
+column.  A user can define a FORMATTER by adding it to the column name in the get
+specification.  The FORMATTER can be stipulated:
+
+ 1. either as a org.apache.hadoop.hbase.util.Bytes method name (e.g, toInt, toString)
+ 2. or as a custom class followed by method name: e.g. 'c(MyFormatterClass).format'.
+
+Example formatting cf:qualifier1 and cf:qualifier2 both as Integers:
+  hbase> get 't1', 'r1' {COLUMN => ['cf:qualifier1:toInt',
+    'cf:qualifier2:c(org.apache.hadoop.hbase.util.Bytes).toInt'] }
+
+Note that you can specify a FORMATTER by column only (cf:qualifier).  You cannot specify
+a FORMATTER for all columns of a column family.
+
+The same commands also can be run on a reference to a table (obtained via get_table or
+create_table). Suppose you had a reference t to table 't1', the corresponding commands
+would be:
+
+  hbase> t.get 'r1'
+  hbase> t.get 'r1', {TIMERANGE => [ts1, ts2]}
+  hbase> t.get 'r1', {COLUMN => 'c1'}
+  hbase> t.get 'r1', {COLUMN => ['c1', 'c2', 'c3']}
+  hbase> t.get 'r1', {COLUMN => 'c1', TIMESTAMP => ts1}
+  hbase> t.get 'r1', {COLUMN => 'c1', TIMERANGE => [ts1, ts2], VERSIONS => 4}
+  hbase> t.get 'r1', {COLUMN => 'c1', TIMESTAMP => ts1, VERSIONS => 4}
+  hbase> t.get 'r1', {FILTER => "ValueFilter(=, 'binary:abc')"}
+  hbase> t.get 'r1', 'c1'
+  hbase> t.get 'r1', 'c1', 'c2'
+  hbase> t.get 'r1', ['c1', 'c2']
+  hbase> t.get 'r1', {CONSISTENCY => 'TIMELINE'}
+  hbase> t.get 'r1', {CONSISTENCY => 'TIMELINE', REGION_REPLICA_ID => 1}
+
+
+hbase(main):006:0> put 'Contacts', '1000', 'Personal:Name', 'John Dole'
+0 row(s) in 0.0780 seconds
+
+hbase(main):007:0> list
+TABLE
+Contacts
+1 row(s) in 0.0080 seconds
+
+=> ["Contacts"]
+hbase(main):008:0> get 'Contacts' '1' 'Personal'
+
+ERROR: wrong number of arguments (1 for 2)
+
+Here is some help for this command:
+Get row or cell contents; pass table name, row, and optionally
+a dictionary of column(s), timestamp, timerange and versions. Examples:
+
+  hbase> get 'ns1:t1', 'r1'
+  hbase> get 't1', 'r1'
+  hbase> get 't1', 'r1', {TIMERANGE => [ts1, ts2]}
+  hbase> get 't1', 'r1', {COLUMN => 'c1'}
+  hbase> get 't1', 'r1', {COLUMN => ['c1', 'c2', 'c3']}
+  hbase> get 't1', 'r1', {COLUMN => 'c1', TIMESTAMP => ts1}
+  hbase> get 't1', 'r1', {COLUMN => 'c1', TIMERANGE => [ts1, ts2], VERSIONS => 4}
+  hbase> get 't1', 'r1', {COLUMN => 'c1', TIMESTAMP => ts1, VERSIONS => 4}
+  hbase> get 't1', 'r1', {FILTER => "ValueFilter(=, 'binary:abc')"}
+  hbase> get 't1', 'r1', 'c1'
+  hbase> get 't1', 'r1', 'c1', 'c2'
+  hbase> get 't1', 'r1', ['c1', 'c2']
+  hbase> get 't1', 'r1', {COLUMN => 'c1', ATTRIBUTES => {'mykey'=>'myvalue'}}
+  hbase> get 't1', 'r1', {COLUMN => 'c1', AUTHORIZATIONS => ['PRIVATE','SECRET']}
+  hbase> get 't1', 'r1', {CONSISTENCY => 'TIMELINE'}
+  hbase> get 't1', 'r1', {CONSISTENCY => 'TIMELINE', REGION_REPLICA_ID => 1}
+
+Besides the default 'toStringBinary' format, 'get' also supports custom formatting by
+column.  A user can define a FORMATTER by adding it to the column name in the get
+specification.  The FORMATTER can be stipulated:
+
+ 1. either as a org.apache.hadoop.hbase.util.Bytes method name (e.g, toInt, toString)
+ 2. or as a custom class followed by method name: e.g. 'c(MyFormatterClass).format'.
+
+Example formatting cf:qualifier1 and cf:qualifier2 both as Integers:
+  hbase> get 't1', 'r1' {COLUMN => ['cf:qualifier1:toInt',
+    'cf:qualifier2:c(org.apache.hadoop.hbase.util.Bytes).toInt'] }
+
+Note that you can specify a FORMATTER by column only (cf:qualifier).  You cannot specify
+a FORMATTER for all columns of a column family.
+
+The same commands also can be run on a reference to a table (obtained via get_table or
+create_table). Suppose you had a reference t to table 't1', the corresponding commands
+would be:
+
+  hbase> t.get 'r1'
+  hbase> t.get 'r1', {TIMERANGE => [ts1, ts2]}
+  hbase> t.get 'r1', {COLUMN => 'c1'}
+  hbase> t.get 'r1', {COLUMN => ['c1', 'c2', 'c3']}
+  hbase> t.get 'r1', {COLUMN => 'c1', TIMESTAMP => ts1}
+  hbase> t.get 'r1', {COLUMN => 'c1', TIMERANGE => [ts1, ts2], VERSIONS => 4}
+  hbase> t.get 'r1', {COLUMN => 'c1', TIMESTAMP => ts1, VERSIONS => 4}
+  hbase> t.get 'r1', {FILTER => "ValueFilter(=, 'binary:abc')"}
+  hbase> t.get 'r1', 'c1'
+  hbase> t.get 'r1', 'c1', 'c2'
+  hbase> t.get 'r1', ['c1', 'c2']
+  hbase> t.get 'r1', {CONSISTENCY => 'TIMELINE'}
+  hbase> t.get 'r1', {CONSISTENCY => 'TIMELINE', REGION_REPLICA_ID => 1}
+
+
+hbase(main):009:0> get 'Contacts' '1000' 'Personal'
+
+ERROR: wrong number of arguments (1 for 2)
+
+Here is some help for this command:
+Get row or cell contents; pass table name, row, and optionally
+a dictionary of column(s), timestamp, timerange and versions. Examples:
+
+  hbase> get 'ns1:t1', 'r1'
+  hbase> get 't1', 'r1'
+  hbase> get 't1', 'r1', {TIMERANGE => [ts1, ts2]}
+  hbase> get 't1', 'r1', {COLUMN => 'c1'}
+  hbase> get 't1', 'r1', {COLUMN => ['c1', 'c2', 'c3']}
+  hbase> get 't1', 'r1', {COLUMN => 'c1', TIMESTAMP => ts1}
+  hbase> get 't1', 'r1', {COLUMN => 'c1', TIMERANGE => [ts1, ts2], VERSIONS => 4}
+  hbase> get 't1', 'r1', {COLUMN => 'c1', TIMESTAMP => ts1, VERSIONS => 4}
+  hbase> get 't1', 'r1', {FILTER => "ValueFilter(=, 'binary:abc')"}
+  hbase> get 't1', 'r1', 'c1'
+  hbase> get 't1', 'r1', 'c1', 'c2'
+  hbase> get 't1', 'r1', ['c1', 'c2']
+  hbase> get 't1', 'r1', {COLUMN => 'c1', ATTRIBUTES => {'mykey'=>'myvalue'}}
+  hbase> get 't1', 'r1', {COLUMN => 'c1', AUTHORIZATIONS => ['PRIVATE','SECRET']}
+  hbase> get 't1', 'r1', {CONSISTENCY => 'TIMELINE'}
+  hbase> get 't1', 'r1', {CONSISTENCY => 'TIMELINE', REGION_REPLICA_ID => 1}
+
+Besides the default 'toStringBinary' format, 'get' also supports custom formatting by
+column.  A user can define a FORMATTER by adding it to the column name in the get
+specification.  The FORMATTER can be stipulated:
+
+ 1. either as a org.apache.hadoop.hbase.util.Bytes method name (e.g, toInt, toString)
+ 2. or as a custom class followed by method name: e.g. 'c(MyFormatterClass).format'.
+
+Example formatting cf:qualifier1 and cf:qualifier2 both as Integers:
+  hbase> get 't1', 'r1' {COLUMN => ['cf:qualifier1:toInt',
+    'cf:qualifier2:c(org.apache.hadoop.hbase.util.Bytes).toInt'] }
+
+Note that you can specify a FORMATTER by column only (cf:qualifier).  You cannot specify
+a FORMATTER for all columns of a column family.
+
+The same commands also can be run on a reference to a table (obtained via get_table or
+create_table). Suppose you had a reference t to table 't1', the corresponding commands
+would be:
+
+  hbase> t.get 'r1'
+  hbase> t.get 'r1', {TIMERANGE => [ts1, ts2]}
+  hbase> t.get 'r1', {COLUMN => 'c1'}
+  hbase> t.get 'r1', {COLUMN => ['c1', 'c2', 'c3']}
+  hbase> t.get 'r1', {COLUMN => 'c1', TIMESTAMP => ts1}
+  hbase> t.get 'r1', {COLUMN => 'c1', TIMERANGE => [ts1, ts2], VERSIONS => 4}
+  hbase> t.get 'r1', {COLUMN => 'c1', TIMESTAMP => ts1, VERSIONS => 4}
+  hbase> t.get 'r1', {FILTER => "ValueFilter(=, 'binary:abc')"}
+  hbase> t.get 'r1', 'c1'
+  hbase> t.get 'r1', 'c1', 'c2'
+  hbase> t.get 'r1', ['c1', 'c2']
+  hbase> t.get 'r1', {CONSISTENCY => 'TIMELINE'}
+  hbase> t.get 'r1', {CONSISTENCY => 'TIMELINE', REGION_REPLICA_ID => 1}
+
+
+hbase(main):010:0> 'Contacts'.get '1000'
+NoMethodError: undefined method `get' for "Contacts":String
+
+hbase(main):011:0> 'Contacts' get '1000'
+SyntaxError: (hbase):11: syntax error, unexpected tIDENTIFIER
+
+'Contacts' get '1000'
+             ^
+
+hbase(main):012:0> scan 'Contacts'
+ROW                                   COLUMN+CELL
+ 1000                                 column=Personal:Name, timestamp=1710745823355, value=John Dole
+1 row(s) in 0.0260 seconds
+
+hbase(main):013:0> get 'Contacts' 1000 'Personal'
+SyntaxError: (hbase):13: syntax error, unexpected tINTEGER
+
+get 'Contacts' 1000 'Personal'
+                  ^
+
+hbase(main):014:0> scan 'Contacts' 'Personal'
+ROW                                   COLUMN+CELL
+
+ERROR: Unknown table ContactsPersonal!
+
+Here is some help for this command:
+Scan a table; pass table name and optionally a dictionary of scanner
+specifications.  Scanner specifications may include one or more of:
+TIMERANGE, FILTER, LIMIT, STARTROW, STOPROW, ROWPREFIXFILTER, TIMESTAMP,
+MAXLENGTH or COLUMNS, CACHE or RAW, VERSIONS, ALL_METRICS or METRICS
+
+If no columns are specified, all columns will be scanned.
+To scan all members of a column family, leave the qualifier empty as in
+'col_family'.
+
+The filter can be specified in two ways:
+1. Using a filterString - more information on this is available in the
+Filter Language document attached to the HBASE-4176 JIRA
+2. Using the entire package name of the filter.
+
+If you wish to see metrics regarding the execution of the scan, the
+ALL_METRICS boolean should be set to true. Alternatively, if you would
+prefer to see only a subset of the metrics, the METRICS array can be
+defined to include the names of only the metrics you care about.
+
+Some examples:
+
+  hbase> scan 'hbase:meta'
+  hbase> scan 'hbase:meta', {COLUMNS => 'info:regioninfo'}
+  hbase> scan 'ns1:t1', {COLUMNS => ['c1', 'c2'], LIMIT => 10, STARTROW => 'xyz'}
+  hbase> scan 't1', {COLUMNS => ['c1', 'c2'], LIMIT => 10, STARTROW => 'xyz'}
+  hbase> scan 't1', {COLUMNS => 'c1', TIMERANGE => [1303668804, 1303668904]}
+  hbase> scan 't1', {REVERSED => true}
+  hbase> scan 't1', {ALL_METRICS => true}
+  hbase> scan 't1', {METRICS => ['RPC_RETRIES', 'ROWS_FILTERED']}
+  hbase> scan 't1', {ROWPREFIXFILTER => 'row2', FILTER => "
+    (QualifierFilter (>=, 'binary:xyz')) AND (TimestampsFilter ( 123, 456))"}
+  hbase> scan 't1', {FILTER =>
+    org.apache.hadoop.hbase.filter.ColumnPaginationFilter.new(1, 0)}
+  hbase> scan 't1', {CONSISTENCY => 'TIMELINE'}
+For setting the Operation Attributes
+  hbase> scan 't1', { COLUMNS => ['c1', 'c2'], ATTRIBUTES => {'mykey' => 'myvalue'}}
+  hbase> scan 't1', { COLUMNS => ['c1', 'c2'], AUTHORIZATIONS => ['PRIVATE','SECRET']}
+For experts, there is an additional option -- CACHE_BLOCKS -- which
+switches block caching for the scanner on (true) or off (false).  By
+default it is enabled.  Examples:
+
+  hbase> scan 't1', {COLUMNS => ['c1', 'c2'], CACHE_BLOCKS => false}
+
+Also for experts, there is an advanced option -- RAW -- which instructs the
+scanner to return all cells (including delete markers and uncollected deleted
+cells). This option cannot be combined with requesting specific COLUMNS.
+Disabled by default.  Example:
+
+  hbase> scan 't1', {RAW => true, VERSIONS => 10}
+
+Besides the default 'toStringBinary' format, 'scan' supports custom formatting
+by column.  A user can define a FORMATTER by adding it to the column name in
+the scan specification.  The FORMATTER can be stipulated:
+
+ 1. either as a org.apache.hadoop.hbase.util.Bytes method name (e.g, toInt, toString)
+ 2. or as a custom class followed by method name: e.g. 'c(MyFormatterClass).format'.
+
+Example formatting cf:qualifier1 and cf:qualifier2 both as Integers:
+  hbase> scan 't1', {COLUMNS => ['cf:qualifier1:toInt',
+    'cf:qualifier2:c(org.apache.hadoop.hbase.util.Bytes).toInt'] }
+
+Note that you can specify a FORMATTER by column only (cf:qualifier).  You cannot
+specify a FORMATTER for all columns of a column family.
+
+Scan can also be used directly from a table, by first getting a reference to a
+table, like such:
+
+  hbase> t = get_table 't'
+  hbase> t.scan
+
+Note in the above situation, you can still provide all the filtering, columns,
+options, etc as described above.
+
+
+
+hbase(main):015:0> scan 'Contacts:Personal'
+ROW                                   COLUMN+CELL
+
+ERROR: Unknown table Contacts:Personal!
+
+Here is some help for this command:
+Scan a table; pass table name and optionally a dictionary of scanner
+specifications.  Scanner specifications may include one or more of:
+TIMERANGE, FILTER, LIMIT, STARTROW, STOPROW, ROWPREFIXFILTER, TIMESTAMP,
+MAXLENGTH or COLUMNS, CACHE or RAW, VERSIONS, ALL_METRICS or METRICS
+
+If no columns are specified, all columns will be scanned.
+To scan all members of a column family, leave the qualifier empty as in
+'col_family'.
+
+The filter can be specified in two ways:
+1. Using a filterString - more information on this is available in the
+Filter Language document attached to the HBASE-4176 JIRA
+2. Using the entire package name of the filter.
+
+If you wish to see metrics regarding the execution of the scan, the
+ALL_METRICS boolean should be set to true. Alternatively, if you would
+prefer to see only a subset of the metrics, the METRICS array can be
+defined to include the names of only the metrics you care about.
+
+Some examples:
+
+  hbase> scan 'hbase:meta'
+  hbase> scan 'hbase:meta', {COLUMNS => 'info:regioninfo'}
+  hbase> scan 'ns1:t1', {COLUMNS => ['c1', 'c2'], LIMIT => 10, STARTROW => 'xyz'}
+  hbase> scan 't1', {COLUMNS => ['c1', 'c2'], LIMIT => 10, STARTROW => 'xyz'}
+  hbase> scan 't1', {COLUMNS => 'c1', TIMERANGE => [1303668804, 1303668904]}
+  hbase> scan 't1', {REVERSED => true}
+  hbase> scan 't1', {ALL_METRICS => true}
+  hbase> scan 't1', {METRICS => ['RPC_RETRIES', 'ROWS_FILTERED']}
+  hbase> scan 't1', {ROWPREFIXFILTER => 'row2', FILTER => "
+    (QualifierFilter (>=, 'binary:xyz')) AND (TimestampsFilter ( 123, 456))"}
+  hbase> scan 't1', {FILTER =>
+    org.apache.hadoop.hbase.filter.ColumnPaginationFilter.new(1, 0)}
+  hbase> scan 't1', {CONSISTENCY => 'TIMELINE'}
+For setting the Operation Attributes
+  hbase> scan 't1', { COLUMNS => ['c1', 'c2'], ATTRIBUTES => {'mykey' => 'myvalue'}}
+  hbase> scan 't1', { COLUMNS => ['c1', 'c2'], AUTHORIZATIONS => ['PRIVATE','SECRET']}
+For experts, there is an additional option -- CACHE_BLOCKS -- which
+switches block caching for the scanner on (true) or off (false).  By
+default it is enabled.  Examples:
+
+  hbase> scan 't1', {COLUMNS => ['c1', 'c2'], CACHE_BLOCKS => false}
+
+Also for experts, there is an advanced option -- RAW -- which instructs the
+scanner to return all cells (including delete markers and uncollected deleted
+cells). This option cannot be combined with requesting specific COLUMNS.
+Disabled by default.  Example:
+
+  hbase> scan 't1', {RAW => true, VERSIONS => 10}
+
+Besides the default 'toStringBinary' format, 'scan' supports custom formatting
+by column.  A user can define a FORMATTER by adding it to the column name in
+the scan specification.  The FORMATTER can be stipulated:
+
+ 1. either as a org.apache.hadoop.hbase.util.Bytes method name (e.g, toInt, toString)
+ 2. or as a custom class followed by method name: e.g. 'c(MyFormatterClass).format'.
+
+Example formatting cf:qualifier1 and cf:qualifier2 both as Integers:
+  hbase> scan 't1', {COLUMNS => ['cf:qualifier1:toInt',
+    'cf:qualifier2:c(org.apache.hadoop.hbase.util.Bytes).toInt'] }
+
+Note that you can specify a FORMATTER by column only (cf:qualifier).  You cannot
+specify a FORMATTER for all columns of a column family.
+
+Scan can also be used directly from a table, by first getting a reference to a
+table, like such:
+
+  hbase> t = get_table 't'
+  hbase> t.scan
+
+Note in the above situation, you can still provide all the filtering, columns,
+options, etc as described above.
+
+
+
+hbase(main):016:0> scan 'Contacts'  {COLUMNS => 'Personal:Name'}
+SyntaxError: (hbase):16: syntax error, unexpected tLCURLY
+
+scan 'Contacts'  {COLUMNS => 'Personal:Name'}
+                 ^
+
+hbase(main):017:0> scan 'Contacts',  {COLUMNS => 'Personal:Name'}
+ROW                                   COLUMN+CELL
+ 1000                                 column=Personal:Name, timestamp=1710745823355, value=John Dole
+1 row(s) in 0.0150 seconds
+
+hbase(main):018:0> scan 'Contacts', 'Personal'
+ROW                                   COLUMN+CELL
+
+ERROR: Args should be a Hash
+
+Here is some help for this command:
+Scan a table; pass table name and optionally a dictionary of scanner
+specifications.  Scanner specifications may include one or more of:
+TIMERANGE, FILTER, LIMIT, STARTROW, STOPROW, ROWPREFIXFILTER, TIMESTAMP,
+MAXLENGTH or COLUMNS, CACHE or RAW, VERSIONS, ALL_METRICS or METRICS
+
+If no columns are specified, all columns will be scanned.
+To scan all members of a column family, leave the qualifier empty as in
+'col_family'.
+
+The filter can be specified in two ways:
+1. Using a filterString - more information on this is available in the
+Filter Language document attached to the HBASE-4176 JIRA
+2. Using the entire package name of the filter.
+
+If you wish to see metrics regarding the execution of the scan, the
+ALL_METRICS boolean should be set to true. Alternatively, if you would
+prefer to see only a subset of the metrics, the METRICS array can be
+defined to include the names of only the metrics you care about.
+
+Some examples:
+
+  hbase> scan 'hbase:meta'
+  hbase> scan 'hbase:meta', {COLUMNS => 'info:regioninfo'}
+  hbase> scan 'ns1:t1', {COLUMNS => ['c1', 'c2'], LIMIT => 10, STARTROW => 'xyz'}
+  hbase> scan 't1', {COLUMNS => ['c1', 'c2'], LIMIT => 10, STARTROW => 'xyz'}
+  hbase> scan 't1', {COLUMNS => 'c1', TIMERANGE => [1303668804, 1303668904]}
+  hbase> scan 't1', {REVERSED => true}
+  hbase> scan 't1', {ALL_METRICS => true}
+  hbase> scan 't1', {METRICS => ['RPC_RETRIES', 'ROWS_FILTERED']}
+  hbase> scan 't1', {ROWPREFIXFILTER => 'row2', FILTER => "
+    (QualifierFilter (>=, 'binary:xyz')) AND (TimestampsFilter ( 123, 456))"}
+  hbase> scan 't1', {FILTER =>
+    org.apache.hadoop.hbase.filter.ColumnPaginationFilter.new(1, 0)}
+  hbase> scan 't1', {CONSISTENCY => 'TIMELINE'}
+For setting the Operation Attributes
+  hbase> scan 't1', { COLUMNS => ['c1', 'c2'], ATTRIBUTES => {'mykey' => 'myvalue'}}
+  hbase> scan 't1', { COLUMNS => ['c1', 'c2'], AUTHORIZATIONS => ['PRIVATE','SECRET']}
+For experts, there is an additional option -- CACHE_BLOCKS -- which
+switches block caching for the scanner on (true) or off (false).  By
+default it is enabled.  Examples:
+
+  hbase> scan 't1', {COLUMNS => ['c1', 'c2'], CACHE_BLOCKS => false}
+
+Also for experts, there is an advanced option -- RAW -- which instructs the
+scanner to return all cells (including delete markers and uncollected deleted
+cells). This option cannot be combined with requesting specific COLUMNS.
+Disabled by default.  Example:
+
+  hbase> scan 't1', {RAW => true, VERSIONS => 10}
+
+Besides the default 'toStringBinary' format, 'scan' supports custom formatting
+by column.  A user can define a FORMATTER by adding it to the column name in
+the scan specification.  The FORMATTER can be stipulated:
+
+ 1. either as a org.apache.hadoop.hbase.util.Bytes method name (e.g, toInt, toString)
+ 2. or as a custom class followed by method name: e.g. 'c(MyFormatterClass).format'.
+
+Example formatting cf:qualifier1 and cf:qualifier2 both as Integers:
+  hbase> scan 't1', {COLUMNS => ['cf:qualifier1:toInt',
+    'cf:qualifier2:c(org.apache.hadoop.hbase.util.Bytes).toInt'] }
+
+Note that you can specify a FORMATTER by column only (cf:qualifier).  You cannot
+specify a FORMATTER for all columns of a column family.
+
+Scan can also be used directly from a table, by first getting a reference to a
+table, like such:
+
+  hbase> t = get_table 't'
+  hbase> t.scan
+
+Note in the above situation, you can still provide all the filtering, columns,
+options, etc as described above.
+
+
+
+hbase(main):019:0> scan 'Contacts',  {COLUMNS => 'Personal:Name'}
+ROW                                   COLUMN+CELL
+ 1000                                 column=Personal:Name, timestamp=1710745823355, value=John Dole
+1 row(s) in 0.0130 seconds
+
+hbase(main):020:0> count 'Contacts'
+1 row(s) in 0.0180 seconds
+
+=> 1
+hbase(main):021:0>
+
